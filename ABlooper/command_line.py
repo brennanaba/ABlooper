@@ -20,5 +20,5 @@ def main():
     if output_file is None:
         output_file = args.file[:-4] + "_remodelled_CDRs.pdb"
     predictor.write_predictions_in_pdb_format(output_file)
-    if args.confidence_score:
+    if args.confidence_score is True:
         print(predictor.decoy_diversity)
