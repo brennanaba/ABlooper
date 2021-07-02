@@ -18,7 +18,7 @@ def main():
     predictor = CDR_Predictor(args.file_path, chains=(args.heavy_chain, args.light_chain))
     output_file = args.output
     if output_file is None:
-        output_file = args.file[:-4] + "_remodelled_CDRs.pdb"
+        output_file = args.file_path[:-4] + "_remodelled_CDRs.pdb"
     predictor.write_predictions_in_pdb_format(output_file)
     if args.confidence_score is True:
         print(predictor.decoy_diversity)
