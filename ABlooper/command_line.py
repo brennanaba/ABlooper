@@ -5,7 +5,7 @@ parser = argparse.ArgumentParser()
 parser.add_argument("file_path", help="Path to the IMGT numbered antibody pdb file for which the CDRs are to be "
                                       "remodelled")
 parser.add_argument("-o", "--output", help="Path to where the output model should be saved. Defaults to the same "
-                                           "directory as input file.", default="None")
+                                           "directory as input file.", default=None)
 parser.add_argument("-H", "--heavy_chain", help="Heavy chain ID for input file. (Default is H)", default="H")
 parser.add_argument("-L", "--light_chain", help="Light chain ID for input file. (Default is L)", default="L")
 parser.add_argument("--confidence_score", help="Print confidence score for each loop", default="False",
