@@ -47,4 +47,5 @@ rmsd_from_input = pred.calculate_BB_rmsd_wrt_input()
 confidence_score = pred.decoy_diversity 
 ```
 
+If you do not already have an antibody model, you can generate one using <a href="http://opig.stats.ox.ac.uk/webapps/newsabdab/sabpred/abodybuilder/">ABodyBuilder</a>.
 
