@@ -19,8 +19,9 @@ This package requires PyTorch. If you do not already have PyTorch installed, you
 
 ## Usage
 
+To use ABlooper, you will need an IMGT numbered antibody model. If you do not already have an antibody model, you can generate one using <a href="http://opig.stats.ox.ac.uk/webapps/newsabdab/sabpred/abodybuilder/">ABodyBuilder</a>.
 
-To remodel the CDRs of an existing model using the command line:
+To remodel the CDRs of an existing antibody model using the command line:
 
 ```bash
 $ ABlooper my_antibody_model.pdb --output ABlooper_model.pdb --heavy_chain H --light_chain L
@@ -47,5 +48,5 @@ rmsd_from_input = pred.calculate_BB_rmsd_wrt_input()
 confidence_score = pred.decoy_diversity 
 ```
 
-If you do not already have an antibody model, you can generate one using <a href="http://opig.stats.ox.ac.uk/webapps/newsabdab/sabpred/abodybuilder/">ABodyBuilder</a>.
+
 
