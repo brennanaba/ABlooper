@@ -1,5 +1,5 @@
 # ABlooper
-The main area of structural variation in antibodies is concentrated in their six complementarity determining regions (CDRs), with the most variable being the H3 loop. The sequence and structure variability of H3 make it particularly challenging to model. Recent work using deep learning to improve protein structure prediction has shown promising results. In this work we present ABlooper, an end-to-end equivariant deep-learning based CDR loop structure prediction tool. ABlooper can predict the structure of CDR loops to a high level of accuracy while providing a confidence estimate for each of its predictions. On the models of the Rosetta Antibody Benchmark, ABlooper makes predictions with an average H3 RMSD of 2.46Å, which drops to 1.91Å when considering only the 70% most confident predictions.
+Antibodies are a key component of the immune system and have been extensively used as biotherapeutics. Accurate knowledge of their structure is central to understanding their function. The key area for antigen binding and the main area of structural variation in antibodies are concentrated in their six complementarity determining regions (CDRs), with the most variable being the CDR-H3 loop. The sequence and structure variability of CDR-H3 make it particularly challenging to model. Recently, deep learning methods have offered a step change in our ability to predict protein structures. In this work we present ABlooper, an end-to-end equivariant deep-learning based CDR loop structure prediction tool. ABlooper predicts the structure of CDR loops with high accuracy and provides a confidence estimate for each of its predictions. On the models of the Rosetta Antibody Benchmark, ABlooper makes predictions with an average H3 RMSD of 2.45Å, which drops to 2.02Å when considering only its 76\% most confident predictions. 
 
 ## Install
 
@@ -40,7 +40,7 @@ pred.write_predictions_in_pdb_format(output_path)
 ```
 
 
-I would recommend using the command line if you just want a quick antibody model, no questions asked. The python class will work better if you want to incorporate this into a pipeline or access other details such as confidence score or RMSD to original model. Both of which can be obtained as follows:
+I would recommend using the command line if you just want a quick antibody model. If speed is a priority, it is probably best to just use the trained pytorch module, as reading and writting a pdb file is slower that running the model. The python class will work best if you want to incorporate CDR prediction into a pipeline or access other details such as confidence score or RMSD to original model. Both of which can be obtained as follows:
 
 
 ```python
