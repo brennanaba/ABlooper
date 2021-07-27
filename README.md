@@ -48,5 +48,18 @@ rmsd_from_input = pred.calculate_BB_rmsd_wrt_input()
 confidence_score = pred.decoy_diversity 
 ```
 
+## Citing this work
 
+The code and data in this package is based on the following paper <a href="https://www.biorxiv.org/content/10.1101/2021.07.26.453747v1">ABlooper</a>. If you use it, please cite:
+
+```tex
+@article {ABLooper,
+	author = {Abanades, Brennan and Georges, Guy and Bujotzek, Alexander and Deane, Charlotte M},
+	title = {ABlooper: Fast accurate antibody CDR loop structure prediction with accuracy estimation},
+	year = {2021},
+	doi = {10.1101/2021.07.26.453747},
+	URL = {https://www.biorxiv.org/content/early/2021/07/26/2021.07.26.453747},
+	journal = {bioRxiv}
+}
+```
 
