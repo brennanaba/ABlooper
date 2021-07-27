@@ -3,15 +3,16 @@ Antibodies are a key component of the immune system and have been extensively us
 
 ## Install
 
-To download:
+To install via PyPi
+
+```bash
+$ pip install ABlooper
+```
+
+To download and install the latest version from github:
 
 ```bash
 $ git clone https://github.com/brennanaba/ABlooper.git
-```
-
-To install
-
-```bash
 $ pip install ABlooper/
 ```
 
