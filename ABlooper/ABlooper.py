@@ -131,7 +131,7 @@ class CDR_Predictor:
             for i, amino in enumerate(BB_coords):
                 amino_type = short2long[seq[i]]
                 for j, coord in enumerate(amino[permutation_to_reorder_atoms]):
-                    if (j == 4) and (amino_type == "GLY"):
+                    if (pdb_atoms[j] == "CB") and (amino_type == "GLY"):
                         continue
                     new_text.append(to_pdb_line(atom_id, pdb_atoms[j], amino_type, chain, numbering[i], coord))
                     atom_id += 1
@@ -165,7 +165,7 @@ class CDR_Predictor:
                     continue
             old_text = new_text
 
-        new_text = "REMARK   5 REMODELLED CDRs USING ABlooper \n" + "".join(old_text)
+        new_text = "REMARK   REMODELLED CDRs USING ABlooper \n" + "".join(old_text)
 
         if file_name is None:
             return "".join(new_text)
