@@ -73,7 +73,11 @@ class CDR_Predictor:
                     i += 1
                 if cut[2] in self.__atoms:
                     j = self.__atoms.index(cut[2])
-                    coors[i, j] = np.float_(cut[6:9])
+                    # Using split for corrds doesn't always work. Following Biopython approach:
+                    x = float(line[30:38])
+                    y = float(line[38:46])
+                    z = float(line[46:54])
+                    coors[i, j] = np.array([x,y,z])
 
             # If missed CB (GLY) then add CA instead
             coors[:, 3] = np.where(np.all(coors[:, 3] != coors[:, 3], axis=-1, keepdims=True), coors[:, 0], coors[:, 3])
