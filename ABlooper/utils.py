@@ -41,14 +41,20 @@ def one_hot(num_list, classes=20):
 
 
 def filt(x, chain, loop_range):
-    if x[:4] == "ATOM" and x.split()[4] == chain:
-        if loop_range[0] <= int(re.sub("[^0-9]", "", x.split()[5])) <= loop_range[1]:
+    """ Function to select residues in a certain chain within a given range.
+
+    If the pdb line contains an atom belonging to the desired chain within the range it returns True.
+    """
+    if x[:4] == "ATOM" and x[21] == chain:
+        if loop_range[0] <= int(x[22:26]) <= loop_range[1]:
             return True
 
     return False
 
 
 def positional_encoding(sequence, n=5):
+    """ Gives the network information on how close each resdiue is to the anchors
+    """
     encs = []
     L = len(sequence)
     for i in range(n):
@@ -59,6 +65,10 @@ def positional_encoding(sequence, n=5):
 
 
 def res_to_atom(amino, n_atoms=4):
+    """ Adds a one-hot encoded vector to each node describing what atom type it is.
+
+    It also reshapes the input tensor.
+    """
     residue_feat = rearrange(amino, "i d -> i () d")
     atom_type = rearrange(torch.eye(n_atoms, device=amino.device), "a d -> () a d")
 
@@ -69,6 +79,8 @@ def res_to_atom(amino, n_atoms=4):
 
 
 def which_loop(loop_seq, cdr):
+    """ Adds a one-hot encoded vector to each node describing which CDR it belongs to.
+    """
     CDRs = ["H1", "H2", "H3", "L1", "L2", "L3", "Anchor"]
     loop = np.zeros((len(loop_seq), len(CDRs)))
     loop[:, -1] = 1
@@ -78,10 +90,14 @@ def which_loop(loop_seq, cdr):
 
 
 def rmsd(loop1, loop2):
+    """ Simple rmsd calculation for numpy arrays.
+    """
     return np.sqrt(np.mean(((loop1 - loop2) ** 2).sum(-1)))
 
 
 def to_pdb_line(atom_id, atom_type, amino_type, chain_ID, residue_id, coords):
+    """Puts all the required info into a .pdb format
+    """
     x, y, z = coords
     insertion = "$"
     if type(residue_id) is str:
@@ -97,6 +113,8 @@ def to_pdb_line(atom_id, atom_type, amino_type, chain_ID, residue_id, coords):
 
 
 def prepare_input_loop(CDR_coords, CDR_seq, CDR):
+    """ Generates input features to be fed into the network
+    """
     CDR_input_coords = copy.deepcopy(CDR_coords)
     CDR_input_coords[1:-1] = np.linspace(CDR_coords[1], CDR_coords[-2], len(CDR_coords) - 2)
     CDR_input_coords = rearrange(torch.tensor(CDR_input_coords), "i a d -> () (i a) d").float()
