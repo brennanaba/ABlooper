@@ -2,6 +2,8 @@
 
 Antibodies are a key component of the immune system and have been extensively used as biotherapeutics. Accurate knowledge of their structure is central to understanding their antigen binding function. The key area for antigen binding and the main area of structural variation in antibodies is concentrated in the six complementarity determining regions (CDRs), with the most important for binding and most variable being the CDR-H3 loop. The sequence and structural variability of CDR-H3 make it particularly challenging to model. Recently deep learning methods have offered a step change in our ability to predict protein structures. In this work we present ABlooper, an end-to-end equivariant deep-learning based CDR loop structure prediction tool. ABlooper rapidly predicts the structure of CDR loops with high accuracy and provides a confidence estimate for each of its predictions. On the models of the Rosetta Antibody Benchmark, ABlooper makes predictions with an average CDR-H3 RMSD of 2.45Å, which drops to 2.02Å when considering only its 76% most confident predictions.
 
+Given an IMGT-numbered antibody structural model, ABlooper remodels the position of backbone atoms (N-CA-C-CB) for all CDRs.
+
 ## Install
 
 To install via PyPi:
@@ -52,15 +54,16 @@ confidence_score = pred.decoy_diversity
 
 ## Citing this work
 
-The code and data in this package is based on the following paper <a href="https://www.biorxiv.org/content/10.1101/2021.07.26.453747v1">ABlooper</a>. If you use it, please cite:
+The code and data in this package is based on the following paper <a href="https://www.biorxiv.org/content/10.1101/2021.07.26.453747v2">ABlooper</a>. If you use it, please cite:
 
 ```tex
-@article {ABLooper,
-	author = {Abanades, Brennan and Georges, Guy and Bujotzek, Alexander and Deane, Charlotte M},
+@article {Abanades2021.07.26.453747,
+	author = {Abanades, Brennan and Georges, Guy and Bujotzek, Alexander and Deane, Charlotte M.},
 	title = {ABlooper: Fast accurate antibody CDR loop structure prediction with accuracy estimation},
 	year = {2021},
 	doi = {10.1101/2021.07.26.453747},
-	URL = {https://www.biorxiv.org/content/early/2021/07/26/2021.07.26.453747},
+	URL = {https://www.biorxiv.org/content/early/2021/08/17/2021.07.26.453747},
+	eprint = {https://www.biorxiv.org/content/early/2021/08/17/2021.07.26.453747.full.pdf},
 	journal = {bioRxiv}
 }
 ```
