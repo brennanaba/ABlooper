@@ -5,6 +5,15 @@ from ABlooper.models import DecoyGen
 from ABlooper.utils import filt, rmsd, to_pdb_line, short2long, long2short, prepare_input_loop
 import os
 
+try:
+    import pyrosetta
+except ModuleNotFoundError:
+    rosetta_available = False
+else:
+    from ABlooper.rosetta_refine import quick_refine
+
+    rosetta_available = True
+
 device = "cuda" if torch.cuda.is_available() else "cpu"
 current_directory = os.path.dirname(os.path.realpath(__file__))
 
@@ -14,7 +23,7 @@ default_model.load_state_dict(torch.load(path, map_location=torch.device(device)
 
 
 class CDR_Predictor:
-    def __init__(self, pdb_file, chains=("H", "L"), model=None):
+    def __init__(self, pdb_file, chains=("H", "L"), model=None, refine=False):
         """ Class used to handle remodelling of CDRs.
 
         :param pdb_file: File of IMGT numbered antibody structure in .pdb format. Must include heavy and light chain
@@ -54,6 +63,11 @@ class CDR_Predictor:
         self.CDR_start_atom_id = {CDR: int([x.split()[1] for x in self.CDR_text[CDR] if x.split()[2] == "N"][2]) for CDR
                                   in self.CDR_text}
 
+        # If rosetta is not available refinement is not possible
+        if (not rosetta_available) and refine:
+            print("PyRosetta is not available. Refinement is not possible")
+        self.refine = refine and rosetta_available
+
     def __extract_BB_coords(self):
         self.CDR_BB_coords = {}
 
@@ -77,7 +91,7 @@ class CDR_Predictor:
                     x = float(line[30:38])
                     y = float(line[38:46])
                     z = float(line[46:54])
-                    coors[i, j] = np.array([x,y,z])
+                    coors[i, j] = np.array([x, y, z])
 
             # If missed CB (GLY) then add CA instead
             coors[:, 3] = np.where(np.all(coors[:, 3] != coors[:, 3], axis=-1, keepdims=True), coors[:, 0], coors[:, 3])
@@ -169,7 +183,14 @@ class CDR_Predictor:
                     continue
             old_text = new_text
 
-        new_text = "REMARK   REMODELLED CDRs USING ABlooper \n" + "".join(old_text)
+        header = [
+            "REMARK    CDR LOOPS REMODELLED USING ABLOOPER                                   \n"]
+
+        if self.refine:
+            old_text = quick_refine(old_text, self.CDR_with_anchor_slices, 500)
+            header.append("REMARK    REFINEMENT DONE USING PYROSETTA"+39*""+"\n")
+
+        new_text = "".join(header + old_text)
 
         if file_name is None:
             return "".join(new_text)

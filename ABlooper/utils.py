@@ -1,8 +1,9 @@
 import torch
 import numpy as np
-import re
 import copy
 from einops import rearrange
+import sys
+import os
 
 aa1 = "ACDEFGHIKLMNPQRSTVWY"
 aa3 = ["ALA", "CYS", "ASP", "GLU", "PHE", "GLY", "HIS", "ILE", "LYS", "LEU", "MET", "ASN", "PRO", "GLN", "ARG", "SER",
@@ -12,10 +13,10 @@ short2long = {}
 long2short = {}
 short2num = {}
 
-for i in range(0, 20):
-    long2short[aa3[i]] = aa1[i]
-    short2long[aa1[i]] = aa3[i]
-    short2num[aa1[i]] = i
+for ind in range(0, 20):
+    long2short[aa3[ind]] = aa1[ind]
+    short2long[aa1[ind]] = aa3[ind]
+    short2num[aa1[ind]] = ind
 
 
 def encode(x, classes):
@@ -126,3 +127,13 @@ def prepare_input_loop(CDR_coords, CDR_seq, CDR):
     encoding = rearrange(encoding, "i a d -> () (i a) d")
 
     return CDR_input_coords, encoding
+
+
+def stop_print(func, *args, **kwargs):
+    """ Runs a function func with whatever arguments are needed while blocking all print statements
+    """
+    with open(os.devnull, "w") as devNull:
+        original = sys.stdout
+        sys.stdout = devNull
+        func(*args, **kwargs)
+        sys.stdout = original
