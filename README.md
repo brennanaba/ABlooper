@@ -20,7 +20,7 @@ $ pip install ABlooper/
 
 This package requires PyTorch. If you do not already have PyTorch installed, you can do so following these <a href="https://pytorch.org/get-started/locally/">instructions</a>.
 
-PyRosetta is required for the refinement and side-chain prediction steps. If you so not have PyRosetta installed, it can be obtained from <a href="https://www.pyrosetta.org/">here</a>.
+PyRosetta is required for the optional refinement and side-chain prediction steps. If you do not have PyRosetta installed, it can be obtained from <a href="https://www.pyrosetta.org/">here</a>.
 
 ## Usage
 
