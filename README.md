@@ -2,7 +2,6 @@
 
 Antibodies are a key component of the immune system and have been extensively used as biotherapeutics. Accurate knowledge of their structure is central to understanding their antigen binding function. The key area for antigen binding and the main area of structural variation in antibodies is concentrated in the six complementarity determining regions (CDRs), with the most important for binding and most variable being the CDR-H3 loop. The sequence and structural variability of CDR-H3 make it particularly challenging to model. Recently deep learning methods have offered a step change in our ability to predict protein structures. In this work we present ABlooper, an end-to-end equivariant deep-learning based CDR loop structure prediction tool. ABlooper rapidly predicts the structure of CDR loops with high accuracy and provides a confidence estimate for each of its predictions. On the models of the Rosetta Antibody Benchmark, ABlooper makes predictions with an average CDR-H3 RMSD of 2.45Å, which drops to 2.02Å when considering only its 76% most confident predictions.
 
-Given an IMGT-numbered antibody structural model, ABlooper remodels the position of backbone atoms (N-CA-C-CB) for all CDRs.
 
 ## Install
 
@@ -20,6 +19,8 @@ $ pip install ABlooper/
 ```
 
 This package requires PyTorch. If you do not already have PyTorch installed, you can do so following these <a href="https://pytorch.org/get-started/locally/">instructions</a>.
+
+PyRosetta is required for the refinement and side-chain prediction steps. If you so not have PyRosetta installed, it can be obtained from <a href="https://www.pyrosetta.org/">here</a>.
 
 ## Usage
 
@@ -50,6 +51,12 @@ I would recommend using the command line if you just want a quick antibody model
 ```python
 rmsd_from_input = pred.calculate_BB_rmsd_wrt_input()
 confidence_score = pred.decoy_diversity 
+```
+
+I have been made aware that ABlooper will ocasionally generate abnormal geometries. To fix this, and to generate side-chains you can do (Only works if you have PyRosetta installed):
+
+```bash
+$ ABlooper my_antibody_model.pdb --output ABlooper_model.pdb --side_chains
 ```
 
 ## Citing this work
