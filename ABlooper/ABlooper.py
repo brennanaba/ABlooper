@@ -10,9 +10,19 @@ try:
 except ModuleNotFoundError:
     rosetta_available = False
 else:
-    from ABlooper.rosetta_refine import quick_refine
+    from ABlooper.rosetta_refine import rosetta_refine
 
     rosetta_available = True
+
+try:
+    import simtk
+    import pdbfixer
+except ModuleNotFoundError:
+    openmm_available = False
+else:
+    from ABlooper.openmm_refine import openmm_refine
+
+    openmm_available = True
 
 device = "cuda" if torch.cuda.is_available() else "cpu"
 current_directory = os.path.dirname(os.path.realpath(__file__))
@@ -63,10 +73,10 @@ class CDR_Predictor:
         self.CDR_start_atom_id = {CDR: int([x.split()[1] for x in self.CDR_text[CDR] if x.split()[2] == "N"][2]) for CDR
                                   in self.CDR_text}
 
-        # If rosetta is not available refinement is not possible
-        if (not rosetta_available) and refine:
-            print("PyRosetta is not available. Refinement is not possible")
-        self.refine = refine and rosetta_available
+        # If rosetta or openmm are not available refinement is not possible
+        if (not rosetta_available) and (not openmm_available) and refine:
+            print("Neither PyRosetta nor OpenMM are available. Refinement is not possible")
+        self.refine = refine and (rosetta_available or openmm_available)
 
     def __extract_BB_coords(self):
         self.CDR_BB_coords = {}
@@ -187,8 +197,12 @@ class CDR_Predictor:
             "REMARK    CDR LOOPS REMODELLED USING ABLOOPER                                   \n"]
 
         if self.refine:
-            old_text = quick_refine(old_text, self.CDR_with_anchor_slices, 500)
-            header.append("REMARK    REFINEMENT DONE USING PYROSETTA"+39*""+"\n")
+            if openmm_available:
+                old_text = openmm_refine(old_text, self.CDR_with_anchor_slices)
+                header.append("REMARK    REFINEMENT DONE USING OPENMM" + 42 * "" + "\n")
+            else:
+                old_text = rosetta_refine(old_text, self.CDR_with_anchor_slices)
+                header.append("REMARK    REFINEMENT DONE USING PYROSETTA" + 39 * "" + "\n")
 
         new_text = "".join(header + old_text)
 

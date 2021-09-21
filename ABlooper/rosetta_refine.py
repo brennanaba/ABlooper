@@ -64,7 +64,7 @@ def get_fa_min_mover(loop_ranges, pose, min_iter):
     return min_mover
 
 
-def quick_refine(pdb_txt, CDR_definitions, min_iter=500):
+def rosetta_refine(pdb_txt, CDR_definitions, min_iter=500):
     """ PyRosetta protocol for minimization refinement of protein structure
 
     """
