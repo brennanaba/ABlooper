@@ -20,7 +20,15 @@ $ pip install ABlooper/
 
 This package requires PyTorch. If you do not already have PyTorch installed, you can do so following these <a href="https://pytorch.org/get-started/locally/">instructions</a>.
 
-PyRosetta is required for the optional refinement and side-chain prediction steps. If you do not have PyRosetta installed, it can be obtained from <a href="https://www.pyrosetta.org/">here</a>.
+
+Either OpenMM or PyRosetta are required for the optional refinement and side-chain prediction steps. 
+OpenMM and pdbfixer can be installed via conda using:
+
+```bash
+$ conda install -c conda-forge openmm pdbfixer
+```
+
+If you want to use PyRosetta for refinement and do not have it installed, it can be obtained from <a href="https://www.pyrosetta.org/">here</a>.
 
 ## Usage
 
@@ -53,11 +61,13 @@ rmsd_from_input = pred.calculate_BB_rmsd_wrt_input()
 confidence_score = pred.decoy_diversity 
 ```
 
-I have been made aware that ABlooper will ocasionally generate abnormal geometries. To fix this, and to generate side-chains you can do (Only works if you have PyRosetta installed):
+I have been made aware that ABlooper will occasionally generate abnormal geometries. To fix this, and to generate side-chains you can do (Only works if you have PyRosetta or OpenMM installed):
 
 ```bash
 $ ABlooper my_antibody_model.pdb --output ABlooper_model.pdb --side_chains
 ```
+
+As a default this will use OpenMM if it is installed.
 
 ## Citing this work
 

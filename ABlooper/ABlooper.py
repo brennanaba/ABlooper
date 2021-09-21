@@ -33,7 +33,7 @@ default_model.load_state_dict(torch.load(path, map_location=torch.device(device)
 
 
 class CDR_Predictor:
-    def __init__(self, pdb_file, chains=("H", "L"), model=None, refine=False):
+    def __init__(self, pdb_file, chains=("H", "L"), model=None, refine=False, refine_method="openmm"):
         """ Class used to handle remodelling of CDRs.
 
         :param pdb_file: File of IMGT numbered antibody structure in .pdb format. Must include heavy and light chain
@@ -77,6 +77,7 @@ class CDR_Predictor:
         if (not rosetta_available) and (not openmm_available) and refine:
             print("Neither PyRosetta nor OpenMM are available. Refinement is not possible")
         self.refine = refine and (rosetta_available or openmm_available)
+        self.refine_method = refine_method
 
     def __extract_BB_coords(self):
         self.CDR_BB_coords = {}
@@ -197,7 +198,7 @@ class CDR_Predictor:
             "REMARK    CDR LOOPS REMODELLED USING ABLOOPER                                   \n"]
 
         if self.refine:
-            if openmm_available:
+            if self.refine_method == "openmm" and openmm_available:
                 old_text = openmm_refine(old_text, self.CDR_with_anchor_slices)
                 header.append("REMARK    REFINEMENT DONE USING OPENMM" + 42 * "" + "\n")
             else:
