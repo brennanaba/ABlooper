@@ -6,22 +6,17 @@ from ABlooper.utils import filt, rmsd, to_pdb_line, short2long, long2short, prep
 import os
 
 try:
-    import pyrosetta
+    from ABlooper.rosetta_refine import rosetta_refine
 except ModuleNotFoundError:
     rosetta_available = False
 else:
-    from ABlooper.rosetta_refine import rosetta_refine
-
     rosetta_available = True
 
 try:
-    import simtk
-    import pdbfixer
+    from ABlooper.openmm_refine import openmm_refine
 except ModuleNotFoundError:
     openmm_available = False
 else:
-    from ABlooper.openmm_refine import openmm_refine
-
     openmm_available = True
 
 device = "cuda" if torch.cuda.is_available() else "cpu"

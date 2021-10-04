@@ -7,10 +7,10 @@ from simtk import unit
 
 ENERGY = unit.kilocalories_per_mole
 LENGTH = unit.angstroms
-spring = 10 * ENERGY / (LENGTH ** 2)
+spring_unit = ENERGY / (LENGTH ** 2)
 
 
-def openmm_refine(pdb_txt, CDR_definitions):
+def openmm_refine(pdb_txt, CDR_definitions, spring_constant=10):
     with tempfile.NamedTemporaryFile("wt") as tmp:
         tmp.writelines(pdb_txt)
         fixer = pdbfixer.PDBFixer(tmp.name)
@@ -36,7 +36,7 @@ def openmm_refine(pdb_txt, CDR_definitions):
             movable.append((chain, res))
 
     force = CustomExternalForce("0.5 * k * ((x-x0)^2 + (y-y0)^2 + (z-z0)^2)")
-    force.addGlobalParameter("k", spring)
+    force.addGlobalParameter("k", spring_constant*spring_unit)
     for p in ["x0", "y0", "z0"]:
         force.addPerParticleParameter(p)
 

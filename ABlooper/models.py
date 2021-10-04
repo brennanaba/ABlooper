@@ -1,22 +1,22 @@
 import torch
-from torch import nn, einsum, broadcast_tensors
 from einops import rearrange
+
 
 # Most of the code in this file is based on egnn-pytorch by lucidrains.
 
-class Swish_(nn.Module):
+class Swish_(torch.nn.Module):
     def forward(self, x):
         return x * x.sigmoid()
 
 
-SiLU = nn.SiLU if hasattr(nn, 'SiLU') else Swish_
+SiLU = torch.nn.SiLU if hasattr(torch.nn, 'SiLU') else Swish_
 
 
-class CoorsNorm(nn.Module):
+class CoorsNorm(torch.nn.Module):
     def __init__(self, eps=1e-8):
         super().__init__()
         self.eps = eps
-        self.fn = nn.LayerNorm(1)
+        self.fn = torch.nn.LayerNorm(1)
 
     def forward(self, coors):
         norm = coors.norm(dim=-1, keepdim=True)
@@ -27,7 +27,7 @@ class CoorsNorm(nn.Module):
 
 # classes
 
-class EGNN(nn.Module):
+class EGNN(torch.nn.Module):
     def __init__(
             self,
             dim,
@@ -37,25 +37,25 @@ class EGNN(nn.Module):
 
         edge_input_dim = (dim * 2) + 1
 
-        self.edge_mlp = nn.Sequential(
-            nn.Linear(edge_input_dim, edge_input_dim * 2),
+        self.edge_mlp = torch.nn.Sequential(
+            torch.nn.Linear(edge_input_dim, edge_input_dim * 2),
             SiLU(),
-            nn.Linear(edge_input_dim * 2, m_dim),
+            torch.nn.Linear(edge_input_dim * 2, m_dim),
             SiLU()
         )
 
         self.coors_norm = CoorsNorm()
 
-        self.node_mlp = nn.Sequential(
-            nn.Linear(dim + m_dim, dim * 2),
+        self.node_mlp = torch.nn.Sequential(
+            torch.nn.Linear(dim + m_dim, dim * 2),
             SiLU(),
-            nn.Linear(dim * 2, dim),
+            torch.nn.Linear(dim * 2, dim),
         )
 
-        self.coors_mlp = nn.Sequential(
-            nn.Linear(m_dim, m_dim * 4),
+        self.coors_mlp = torch.nn.Sequential(
+            torch.nn.Linear(m_dim, m_dim * 4),
             SiLU(),
-            nn.Linear(m_dim * 4, 1)
+            torch.nn.Linear(m_dim * 4, 1)
         )
 
     def forward(self, feats, coors):
@@ -64,7 +64,7 @@ class EGNN(nn.Module):
 
         feats_j = rearrange(feats, 'b j d -> b () j d')
         feats_i = rearrange(feats, 'b i d -> b i () d')
-        feats_i, feats_j = broadcast_tensors(feats_i, feats_j)
+        feats_i, feats_j = torch.broadcast_tensors(feats_i, feats_j)
 
         edge_input = torch.cat((feats_i, feats_j, rel_dist), dim=-1)
 
@@ -75,7 +75,7 @@ class EGNN(nn.Module):
 
         rel_coors = self.coors_norm(rel_coors)
 
-        coors_out = einsum('b i j, b i j c -> b i c', coor_weights, rel_coors) + coors
+        coors_out = torch.einsum('b i j, b i j c -> b i c', coor_weights, rel_coors) + coors
 
         m_i = m_ij.sum(dim=-2)
 
@@ -85,10 +85,10 @@ class EGNN(nn.Module):
         return node_out, coors_out
 
 
-class ResEGNN(nn.Module):
+class ResEGNN(torch.nn.Module):
     def __init__(self, corrections=4, dims_in=41, **kwargs):
         super().__init__()
-        self.layers = nn.ModuleList([EGNN(dim=dims_in, **kwargs) for _ in range(corrections)])
+        self.layers = torch.nn.ModuleList([EGNN(dim=dims_in, **kwargs) for _ in range(corrections)])
 
     def forward(self, amino, geom):
         for layer in self.layers:
@@ -96,10 +96,10 @@ class ResEGNN(nn.Module):
         return geom
 
 
-class DecoyGen(nn.Module):
+class DecoyGen(torch.nn.Module):
     def __init__(self, dims_in=41, decoys=5, **kwargs):
         super().__init__()
-        self.blocks = nn.ModuleList([ResEGNN(dims_in=dims_in, **kwargs) for _ in range(decoys)])
+        self.blocks = torch.nn.ModuleList([ResEGNN(dims_in=dims_in, **kwargs) for _ in range(decoys)])
         self.decoys = decoys
 
     def forward(self, amino, geom):

@@ -2,11 +2,10 @@ import argparse
 from ABlooper.ABlooper import CDR_Predictor
 
 try:
-    import simtk
-    import pdbfixer
+    from ABlooper.openmm_refine import openmm_refine
 except ModuleNotFoundError:
     try:
-        import pyrosetta
+        from ABlooper.rosetta_refine import rosetta_refine
     except ModuleNotFoundError:
         refinement_available = False
     else:
