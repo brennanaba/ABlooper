@@ -1,7 +1,6 @@
 # ABlooper
 
-Antibodies are a key component of the immune system and have been extensively used as biotherapeutics. Accurate knowledge of their structure is central to understanding their antigen binding function. The key area for antigen binding and the main area of structural variation in antibodies is concentrated in the six complementarity determining regions (CDRs), with the most important for binding and most variable being the CDR-H3 loop. The sequence and structural variability of CDR-H3 make it particularly challenging to model. Recently deep learning methods have offered a step change in our ability to predict protein structures. In this work we present ABlooper, an end-to-end equivariant deep-learning based CDR loop structure prediction tool. ABlooper rapidly predicts the structure of CDR loops with high accuracy and provides a confidence estimate for each of its predictions. On the models of the Rosetta Antibody Benchmark, ABlooper makes predictions with an average CDR-H3 RMSD of 2.45Å, which drops to 2.02Å when considering only its 76% most confident predictions.
-
+Antibodies are a key component of the immune system and have been extensively used as biotherapeutics. Accurate knowledge of their structure is central to understanding their antigen binding function. The key area for antigen binding and the main area of structural variation in antibodies is concentrated in the six complementarity determining regions (CDRs), with the most important for binding and most variable being the CDR-H3 loop. The sequence and structural variability of CDR-H3 make it particularly challenging to model. Recently deep learning methods have offered a step change in our ability to predict protein structures. In this work we present ABlooper, an end-to-end equivariant deep-learning based CDR loop structure prediction tool. ABlooper rapidly predicts the structure of CDR loops with high accuracy and provides a confidence estimate for each of its predictions. On the models of the Rosetta Antibody Benchmark, ABlooper makes predictions with an average CDR-H3 RMSD of 2.49Å, which drops to 2.05Å when considering only its 76% most confident predictions.
 
 ## Install
 
@@ -71,7 +70,7 @@ As a default this will use OpenMM if it is installed.
 
 ## Citing this work
 
-The code and data in this package is based on the following paper <a href="https://www.biorxiv.org/content/10.1101/2021.07.26.453747v2">ABlooper</a>. If you use it, please cite:
+The code and data in this package is based on the following paper <a href="https://www.biorxiv.org/content/10.1101/2021.07.26.453747v3">ABlooper</a>. If you use it, please cite:
 
 ```tex
 @article {Abanades2021.07.26.453747,
