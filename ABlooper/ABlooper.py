@@ -195,10 +195,10 @@ class CDR_Predictor:
         if self.refine:
             if self.refine_method == "openmm" and openmm_available:
                 old_text = openmm_refine(old_text, self.CDR_with_anchor_slices)
-                header.append("REMARK    REFINEMENT DONE USING OPENMM" + 42 * "" + "\n")
+                header.append("REMARK    REFINEMENT DONE USING OPENMM" + 42 * " " + "\n")
             else:
                 old_text = rosetta_refine(old_text, self.CDR_with_anchor_slices)
-                header.append("REMARK    REFINEMENT DONE USING PYROSETTA" + 39 * "" + "\n")
+                header.append("REMARK    REFINEMENT DONE USING PYROSETTA" + 39 * " " + "\n")
 
         new_text = "".join(header + old_text)
 
