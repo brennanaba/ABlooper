@@ -1,17 +1,6 @@
 import argparse
-from ABlooper.ABlooper import CDR_Predictor
+from ABlooper.ABlooper import CDR_Predictor, openmm_available, rosetta_available
 
-try:
-    from ABlooper.openmm_refine import openmm_refine
-except ModuleNotFoundError:
-    try:
-        from ABlooper.rosetta_refine import rosetta_refine
-    except ModuleNotFoundError:
-        refinement_available = False
-    else:
-        refinement_available = True
-else:
-    refinement_available = True
 
 parser = argparse.ArgumentParser()
 parser.add_argument("file_path", help="Path to the IMGT numbered antibody pdb file for which the CDRs are to be "
@@ -22,7 +11,8 @@ parser.add_argument("-H", "--heavy_chain", help="Heavy chain ID for input file. 
 parser.add_argument("-L", "--light_chain", help="Light chain ID for input file. (Default is L)", default="L")
 parser.add_argument("--confidence_score", help="Print confidence score for each loop", default=False,
                     action="store_true")
-if refinement_available:
+
+if openmm_available or rosetta_available:
     parser.add_argument("-s", "--side_chains", help="Predict side chains and refine loop geometry",
                         default=False, action="store_true")
 
@@ -30,7 +20,7 @@ args = parser.parse_args()
 
 
 def main():
-    if refinement_available:
+    if openmm_available or rosetta_available:
         side_chains = args.side_chains
     else:
         side_chains = False

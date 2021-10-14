@@ -35,6 +35,7 @@ def openmm_refine(pdb_txt, CDR_definitions, spring_constant=10):
         for res in range(rang[0], rang[1] + 1):
             movable.append((chain, res))
 
+    # Keep atoms close to initial prediction
     force = CustomExternalForce("0.5 * k * ((x-x0)^2 + (y-y0)^2 + (z-z0)^2)")
     force.addGlobalParameter("k", spring_constant*spring_unit)
     for p in ["x0", "y0", "z0"]:

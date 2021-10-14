@@ -93,7 +93,7 @@ class CDR_Predictor:
                     i += 1
                 if cut[2] in self.__atoms:
                     j = self.__atoms.index(cut[2])
-                    # Using split for corrds doesn't always work. Following Biopython approach:
+                    # Using split for coords doesn't always work. Following Biopython approach:
                     x = float(line[30:38])
                     y = float(line[38:46])
                     z = float(line[46:54])
