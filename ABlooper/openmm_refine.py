@@ -1,7 +1,7 @@
 import pdbfixer
 import tempfile
 from io import StringIO
-from openmm import app, LangevinIntegrator, CustomExternalForce
+from simtk.openmm import app, LangevinIntegrator, CustomExternalForce
 from simtk import unit
 
 
