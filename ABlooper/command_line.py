@@ -1,7 +1,6 @@
 import argparse
 from ABlooper.ABlooper import CDR_Predictor, openmm_available, rosetta_available
 
-
 parser = argparse.ArgumentParser()
 parser.add_argument("file_path", help="Path to the IMGT numbered antibody pdb file for which the CDRs are to be "
                                       "remodelled")
@@ -16,6 +15,10 @@ if openmm_available or rosetta_available:
     parser.add_argument("-s", "--side_chains", help="Predict side chains and refine loop geometry",
                         default=False, action="store_true")
 
+if rosetta_available:
+    parser.add_argument("-r", "--rosetta_refine", help="Use PyRosetta for refinement",
+                        default=False, action="store_true")
+
 args = parser.parse_args()
 
 
@@ -25,7 +28,9 @@ def main():
     else:
         side_chains = False
 
-    predictor = CDR_Predictor(args.file_path, chains=(args.heavy_chain, args.light_chain), refine=side_chains)
+    refine_method = "pyrosetta" if (args.rosetta_refine if rosetta_available else False) else "openmm"
+    predictor = CDR_Predictor(args.file_path, chains=(args.heavy_chain, args.light_chain), refine=side_chains,
+                              refine_method=refine_method)
     output_file = args.output
 
     if output_file is None:
