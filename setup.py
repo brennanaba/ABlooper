@@ -4,7 +4,7 @@ with open("README.md", "r", encoding="utf-8") as fh:
     long_description = fh.read()
 setup(
     name='ABlooper',
-    version='1.0.6',
+    version='1.0.7',
     description='Set of functions to predict CDR structure',
     license='BSD 3-clause license',
     maintainer='Brennan Abanades',
