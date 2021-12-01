@@ -13,6 +13,7 @@ spring_unit = ENERGY / (LENGTH ** 2)
 def openmm_refine(pdb_txt, CDR_definitions, spring_constant=10):
     with tempfile.NamedTemporaryFile("wt") as tmp:
         tmp.writelines(pdb_txt)
+        tmp.flush()
         fixer = pdbfixer.PDBFixer(tmp.name)
 
     fixer.findMissingResidues()
