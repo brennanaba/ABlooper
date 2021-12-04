@@ -34,6 +34,8 @@ class CDR_Predictor:
         :param pdb_file: File of IMGT numbered antibody structure in .pdb format. Must include heavy and light chain
         :param chains: Name of heavy and light chain to be remodelled in the file
         :param model: Trained neural network. If left as None a pretrained network is used.
+        :bool refine: If the refinement and side-chain prediction steps should done.
+        :param refine_method: Package used to do relaxation.
         """
         self.pdb_file = pdb_file
         self.chains = chains
