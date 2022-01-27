@@ -133,8 +133,9 @@ class CDR_Predictor:
 
                 # A decoy diversity of over 3A does not really happen unless something has gone wrong.
                 if (self.decoy_diversity[CDR] > 3.0) and (CDR != "H3") and self.warn:
-                    print("CDR-{} prediction incorrect. Are you sure the provided structure is an IMGT numbered "
-                          "antibody?".format(CDR))
+                    print("Warning: CDR-{} prediction for {} incorrect.".format(CDR, self.pdb_file))
+                    print("Are you sure the provided structure is an IMGT numbered antibody?")
+                    self.warn = False
 
         return self.predicted_CDRs
 
