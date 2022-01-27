@@ -10,6 +10,7 @@ parser.add_argument("-H", "--heavy_chain", help="Heavy chain ID for input file. 
 parser.add_argument("-L", "--light_chain", help="Light chain ID for input file. (Default is L)", default="L")
 parser.add_argument("--confidence_score", help="Print confidence score for each loop", default=False,
                     action="store_true")
+parser.add_argument("-q", "--quiet", help="Stop ABlooper from printing warnings.", default=False, action="store_true")
 
 if openmm_available or rosetta_available:
     parser.add_argument("-s", "--side_chains", help="Predict side chains and refine loop geometry",
@@ -30,7 +31,7 @@ def main():
 
     refine_method = "pyrosetta" if (args.rosetta_refine if rosetta_available else False) else "openmm"
     predictor = CDR_Predictor(args.file_path, chains=(args.heavy_chain, args.light_chain), refine=side_chains,
-                              refine_method=refine_method)
+                              refine_method=refine_method, warn=(not args.quiet))
     output_file = args.output
 
     if output_file is None:

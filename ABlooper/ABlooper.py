@@ -28,7 +28,7 @@ default_model.load_state_dict(torch.load(path, map_location=torch.device(device)
 
 
 class CDR_Predictor:
-    def __init__(self, pdb_file, chains=("H", "L"), model=None, refine=False, refine_method="openmm"):
+    def __init__(self, pdb_file, chains=("H", "L"), model=None, refine=False, refine_method="openmm", warn=True):
         """ Class used to handle remodelling of CDRs.
 
         :param pdb_file: File of IMGT numbered antibody structure in .pdb format. Must include heavy and light chain
@@ -36,6 +36,7 @@ class CDR_Predictor:
         :param model: Trained neural network. If left as None a pretrained network is used.
         :bool refine: If the refinement and side-chain prediction steps should done.
         :param refine_method: Package used to do relaxation.
+        :bool warn: Print a warning if we believe the inputted structure is not a IMGT numbered antibody Fv
         """
         self.pdb_file = pdb_file
         self.chains = chains
@@ -75,6 +76,7 @@ class CDR_Predictor:
             print("Neither PyRosetta nor OpenMM are available. Refinement is not possible")
         self.refine = refine and (rosetta_available or openmm_available)
         self.refine_method = refine_method
+        self.warn = warn
 
     def __extract_BB_coords(self):
         self.CDR_BB_coords = {}
@@ -128,6 +130,11 @@ class CDR_Predictor:
                 self.predicted_CDRs[CDR] = rearrange(output_CDR.mean(0), "(i a) d -> i a d", a=4).cpu().numpy()
                 self.decoy_diversity[CDR] = (output_CDR[None] - output_CDR[:, None]).pow(2).sum(-1).mean(-1).pow(
                     1 / 2).sum().item() / 20
+
+                # A decoy diversity of over 3A does not really happen unless something has gone wrong.
+                if (self.decoy_diversity[CDR] > 3.0) and (CDR != "H3") and self.warn:
+                    print("CDR-{} prediction incorrect. Are you sure the provided structure is an IMGT numbered "
+                          "antibody?".format(CDR))
 
         return self.predicted_CDRs
 
