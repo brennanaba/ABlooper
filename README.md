@@ -70,17 +70,20 @@ As a default this will use OpenMM if it is installed.
 
 ## Citing this work
 
-The code and data in this package is based on the following paper <a href="https://www.biorxiv.org/content/10.1101/2021.07.26.453747v3">ABlooper</a>. If you use it, please cite:
+The code and data in this package is based on the following paper <a href="https://academic.oup.com/bioinformatics/article/38/7/1877/6517780">ABlooper</a>. If you use it, please cite:
 
 ```tex
-@article {Abanades2021.07.26.453747,
-	author = {Abanades, Brennan and Georges, Guy and Bujotzek, Alexander and Deane, Charlotte M.},
-	title = {ABlooper: Fast accurate antibody CDR loop structure prediction with accuracy estimation},
-	year = {2021},
-	doi = {10.1101/2021.07.26.453747},
-	URL = {https://www.biorxiv.org/content/early/2021/08/17/2021.07.26.453747},
-	eprint = {https://www.biorxiv.org/content/early/2021/08/17/2021.07.26.453747.full.pdf},
-	journal = {bioRxiv}
-}
+@article{10.1093/bioinformatics/btac016,
+    author = {Abanades, Brennan and Georges, Guy and Bujotzek, Alexander and Deane, Charlotte M},
+    title = "{ABlooper: fast accurate antibody CDR loop structure prediction with accuracy estimation}",
+    journal = {Bioinformatics},
+    volume = {38},
+    number = {7},
+    pages = {1877-1880},
+    year = {2022},
+    month = {01},
+    issn = {1367-4803},
+    doi = {10.1093/bioinformatics/btac016},
+    url = {https://doi.org/10.1093/bioinformatics/btac016},
 ```
 
