@@ -75,7 +75,7 @@ The code and data in this package is based on the following paper <a href="https
 ```tex
 @article{10.1093/bioinformatics/btac016,
     author = {Abanades, Brennan and Georges, Guy and Bujotzek, Alexander and Deane, Charlotte M},
-    title = "{ABlooper: fast accurate antibody CDR loop structure prediction with accuracy estimation}",
+    title = {ABlooper: fast accurate antibody CDR loop structure prediction with accuracy estimation},
     journal = {Bioinformatics},
     volume = {38},
     number = {7},
