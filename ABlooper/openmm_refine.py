@@ -15,10 +15,9 @@ def relax_CDR_loops(pdb_txt, CDR_definitions, spring_constant=10):
     :param pdb_txt: ABlooper prediction stored as text in PDB format.
     :param CDR_definitions: How we are defining the CDR loops.
     :param spring_constant: Strength of the spring keeping backbone atoms in place.
-    :param attempts: Number of attempts to run minimization before giving up.
     """
 
-    with tempfile.NamedTemporaryFile("wt") as tmp:
+    with tempfile.NamedTemporaryFile("wt", delete=False) as tmp:
         tmp.writelines(pdb_txt)
         tmp.flush()
         fixer = pdbfixer.PDBFixer(tmp.name)
