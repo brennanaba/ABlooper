@@ -22,33 +22,48 @@ else:
 device = "cuda" if torch.cuda.is_available() else "cpu"
 current_directory = os.path.dirname(os.path.realpath(__file__))
 
-default_model = DecoyGen().float().to(device)
+default_model_chothia = DecoyGen().float().to(device)
 path = os.path.join(current_directory, "trained_model", "final_model")
-default_model.load_state_dict(torch.load(path, map_location=torch.device(device)))
+default_model_chothia.load_state_dict(torch.load(path, map_location=torch.device(device)))
+
+default_model_imgt = DecoyGen(coors_norm=False).float().to(device)
+path = os.path.join(current_directory, "trained_model", "final_model_imgt")
+default_model_imgt.load_state_dict(torch.load(path, map_location=torch.device(device)))
 
 
 class CDR_Predictor:
-    def __init__(self, pdb_file, chains=("H", "L"), model=None, refine=False, refine_method="openmm", warn=True):
+    def __init__(self, pdb_file, chains=("H", "L"), model='chothia', refine=False, refine_method="openmm", warn=True):
         """ Class used to handle remodelling of CDRs.
 
         :param pdb_file: File of IMGT numbered antibody structure in .pdb format. Must include heavy and light chain
         :param chains: Name of heavy and light chain to be remodelled in the file
-        :param model: Trained neural network. If left as None a pretrained network is used.
+        :param model: Trained neural network. If left as 'chothia' or set to 'imgt' pretrained network on Chothia or IMGT numbering is used.
         :bool refine: If the refinement and side-chain prediction steps should done.
         :param refine_method: Package used to do relaxation.
         :bool warn: Print a warning if we believe the inputted structure is not a IMGT numbered antibody Fv
         """
         self.pdb_file = pdb_file
         self.chains = chains
-        self.model = model if model is not None else default_model
-        self.CDR_with_anchor_slices = {
-            "H1": (chains[0], (25, 39)),
-            "H2": (chains[0], (55, 66)),
-            "H3": (chains[0], (105, 119)),
-            "L1": (chains[1], (22, 42)),
-            "L2": (chains[1], (54, 71)),
-            "L3": (chains[1], (103, 119))}
-        self.__atoms = ["CA", "N", "C", "CB"]
+        self.numbering_scheme = model if isinstance(model, str) else None
+        self.model = default_model_chothia if model == 'chothia' else default_model_imgt if model == 'imgt' else model
+        if self.numbering_scheme == 'imgt':
+            self.CDR_with_anchor_slices = {
+                "H1": (chains[0], (25, 40)),
+                "H2": (chains[0], (54, 67)),
+                "H3": (chains[0], (103, 119)),
+                "L1": (chains[1], (25, 40)),
+                "L2": (chains[1], (54, 67)),
+                "L3": (chains[1], (103, 119))}
+            self.__atoms = ["CA", "C", "N", "CB"]
+        else:
+            self.CDR_with_anchor_slices = {
+                "H1": (chains[0], (25, 39)),
+                "H2": (chains[0], (55, 66)),
+                "H3": (chains[0], (105, 119)),
+                "L1": (chains[1], (22, 42)),
+                "L2": (chains[1], (54, 71)),
+                "L3": (chains[1], (103, 119))}
+            self.__atoms = ["CA", "N", "C", "CB"]
 
         self.predicted_CDRs = {}
         self.all_decoys = {}
@@ -152,7 +167,7 @@ class CDR_Predictor:
         pdb_format = {}
 
         pdb_atoms = ["N", "CA", "C", "CB"]
-        permutation_to_reorder_atoms = [1, 0, 2, 3]
+        permutation_to_reorder_atoms = [self.__atoms.index(atom) for atom in pdb_atoms]
 
         for CDR in self.CDR_start_atom_id:
             new_text = []
