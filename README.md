@@ -51,7 +51,7 @@ pred = CDR_Predictor(input_path, chains = ("H", "L"))
 pred.write_predictions_in_pdb_format(output_path)
 ```
 
-Two pretrained models are available. The default predicts CDRs defined by the Chothia numbering scheme. To get predictions of CDRs defined by the IMGT numbering scheme use:
+Two pretrained models are available. The default predicts CDRs defined by the Chothia numbering scheme (This is the model described in the paper). To get predictions of CDRs defined by the IMGT numbering scheme use:
 
 ```python
 pred = CDR_Predictor(input_path, chains = ("H", "L"), model = 'imgt')
