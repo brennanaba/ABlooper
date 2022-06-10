@@ -32,9 +32,11 @@ class EGNN(torch.nn.Module):
             self,
             dim,
             m_dim=32,
+            coors_norm=True
     ):
         super().__init__()
 
+        self.norm = coors_norm
         edge_input_dim = (dim * 2) + 1
 
         self.edge_mlp = torch.nn.Sequential(
@@ -44,7 +46,8 @@ class EGNN(torch.nn.Module):
             SiLU()
         )
 
-        self.coors_norm = CoorsNorm()
+        if self.norm:
+            self.coors_norm = CoorsNorm()
 
         self.node_mlp = torch.nn.Sequential(
             torch.nn.Linear(dim + m_dim, dim * 2),
@@ -73,11 +76,14 @@ class EGNN(torch.nn.Module):
         coor_weights = self.coors_mlp(m_ij)
         coor_weights = rearrange(coor_weights, 'b i j () -> b i j')
 
-        rel_coors = self.coors_norm(rel_coors)
-
-        coors_out = torch.einsum('b i j, b i j c -> b i c', coor_weights, rel_coors) + coors
-
-        m_i = m_ij.sum(dim=-2)
+        if self.norm:
+            rel_coors = self.coors_norm(rel_coors)
+            coors_out = torch.einsum('b i j, b i j c -> b i c', coor_weights, rel_coors) + coors
+            m_i = m_ij.sum(dim=-2)
+        else:
+            rel_coors = rel_coors / rel_dist.clip(min = 1e-8)
+            coors_out = torch.einsum('b i j, b i j c -> b i c', coor_weights, rel_coors) + coors
+            m_i = m_ij.mean(dim=-2)
 
         node_mlp_input = torch.cat((feats, m_i), dim=-1)
         node_out = self.node_mlp(node_mlp_input) + feats
@@ -86,9 +92,9 @@ class EGNN(torch.nn.Module):
 
 
 class ResEGNN(torch.nn.Module):
-    def __init__(self, corrections=4, dims_in=41, **kwargs):
+    def __init__(self, corrections=4, dims_in=41, coors_norm=True, **kwargs):
         super().__init__()
-        self.layers = torch.nn.ModuleList([EGNN(dim=dims_in, **kwargs) for _ in range(corrections)])
+        self.layers = torch.nn.ModuleList([EGNN(dim=dims_in, coors_norm=coors_norm, **kwargs) for _ in range(corrections)])
 
     def forward(self, amino, geom):
         for layer in self.layers:
@@ -97,9 +103,9 @@ class ResEGNN(torch.nn.Module):
 
 
 class DecoyGen(torch.nn.Module):
-    def __init__(self, dims_in=41, decoys=5, **kwargs):
+    def __init__(self, dims_in=41, decoys=5, coors_norm=True, **kwargs):
         super().__init__()
-        self.blocks = torch.nn.ModuleList([ResEGNN(dims_in=dims_in, **kwargs) for _ in range(decoys)])
+        self.blocks = torch.nn.ModuleList([ResEGNN(dims_in=dims_in, coors_norm=coors_norm, **kwargs) for _ in range(decoys)])
         self.decoys = decoys
 
     def forward(self, amino, geom):

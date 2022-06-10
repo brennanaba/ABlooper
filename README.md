@@ -51,6 +51,12 @@ pred = CDR_Predictor(input_path, chains = ("H", "L"))
 pred.write_predictions_in_pdb_format(output_path)
 ```
 
+Two pretrained models are available. The default predicts CDRs defined by the Chothia numbering scheme. To get predictions of CDRs defined by the IMGT numbering scheme use:
+
+```python
+pred = CDR_Predictor(input_path, chains = ("H", "L"), model = 'imgt')
+pred.write_predictions_in_pdb_format(output_path)
+```
 
 I would recommend using the command line if you just want a quick antibody model. If speed is a priority, it is probably best to just use the trained pytorch model. The python class will work best if you want to incorporate CDR prediction into a pipeline or access other details such as confidence score or RMSD to original model. Both of which can be obtained as follows:
 
@@ -63,7 +69,7 @@ confidence_score = pred.decoy_diversity
 I have been made aware that ABlooper will occasionally generate abnormal geometries. To fix this, and to generate side-chains you can do (Only works if you have PyRosetta or OpenMM installed):
 
 ```bash
-$ ABlooper my_antibody_model.pdb --output ABlooper_model.pdb --side_chains
+$ ABlooper my_antibody_model.pdb --output ABlooper_model.pdb --model chothia --side_chains
 ```
 
 As a default this will use OpenMM if it is installed.
