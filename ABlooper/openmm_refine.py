@@ -33,7 +33,7 @@ def openmm_refine(pdb_txt, CDR_definitions, attempts=7):
             trans_peptide_bonds = cis_check(topology, positions)
         except OpenMMException as e:
             if (i == attempts-1) and ("positions" not in locals()):
-                print("OpenMM failed to refine")
+                print("OpenMM failed to refine model")
                 raise e
             else:
                 continue
@@ -54,8 +54,11 @@ def openmm_refine(pdb_txt, CDR_definitions, attempts=7):
             if cis_check(topology, positions) and stereo_check(topology, positions):
                 break
             else:
-                print("Relaxation Failed: Trying again. Number of attempts: {}".format(i+1))
-                k1 = k1s[min(i, len(k1s)-1)]
+                if i != attempts-1:
+                    print("Relaxation Failed: Trying again. Number of attempts: {}".format(i+1))
+                    k1 = k1s[min(i, len(k1s)-1)]
+                else:
+                    print("Relaxation Failed: Output has either cis peptides or D-stereoisomers.")
 
     out_handle = StringIO()
     app.PDBFile.writeFile(simulation.topology, simulation.context.getState(getPositions=True).getPositions(),
@@ -94,7 +97,8 @@ def refine_once(topology, positions, CDR_definitions, k1=2.5, k2=2.5):
         for atom in residue.atoms():
             if (residue.chain.id, int(residue.id)) not in movable:
                 for atom in residue.atoms():
-                    system.setParticleMass(atom.index, 0.0)
+                    if k1==2.5:
+                        system.setParticleMass(atom.index, 0.0)
             elif atom.name in ["CA", "CB", "N", "C"]:
                 force.addParticle(atom.index, modeller.positions[atom.index])
 
