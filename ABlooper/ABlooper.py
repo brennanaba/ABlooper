@@ -232,6 +232,7 @@ class CDR_Predictor:
         else:
             with open(file_name, "w+") as file:
                 file.write(new_text)
+            return None
 
     def __repr__(self):
         return "CDR_Predictor: {}".format(self.pdb_file.split("/")[-1])
