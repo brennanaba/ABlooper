@@ -2,7 +2,7 @@ import tempfile
 from io import StringIO
 import pdbfixer
 import numpy as np
-from simtk.openmm import app, LangevinIntegrator, CustomExternalForce, CustomTorsionForce, HarmonicBondForce, OpenMMException
+from simtk.openmm import app, LangevinIntegrator, CustomExternalForce, CustomTorsionForce, OpenMMException
 from simtk import unit
 
 ENERGY = unit.kilocalories_per_mole
@@ -96,9 +96,8 @@ def refine_once(topology, positions, CDR_definitions, k1=2.5, k2=2.5):
     for residue in modeller.topology.residues():
         for atom in residue.atoms():
             if (residue.chain.id, int(residue.id)) not in movable:
-                for atom in residue.atoms():
-                    if k1==2.5:
-                        system.setParticleMass(atom.index, 0.0)
+                if k1==2.5:
+                    system.setParticleMass(atom.index, 0.0)
             elif atom.name in ["CA", "CB", "N", "C"]:
                 force.addParticle(atom.index, modeller.positions[atom.index])
 
